@@ -22,10 +22,7 @@ defmodule Pool.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:poolboy, git: "https://github.com/devinus/poolboy.git"},
-      {:epgsql, git: "https://github.com/epgsql/epgsql.git"}
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+
     ]
   end
 end

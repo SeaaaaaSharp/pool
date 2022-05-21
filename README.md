@@ -1,21 +1,45 @@
-# Pool
+# Description
 
-**TODO: Add description**
+This is nothing but a port of erlang's poolboy <https://github.com/devinus/poolboy> to elixir done mainly for the purpose of learning
+about pooling and becoming more comfortable with erlang's syntax. There were minor tweaks here and there notably the usage of a map instead of a keyword list for the options and the addition of the `checkout_with_args` function.
 
-## Installation
+## Options
+The options and their default values remain the same as for poolboy besides the worker_module which gets replaced by a more descriptive `worker_opts` map with a required `worker_module` key and optional `worker_args` key.
+## Example
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `pool` to your list of dependencies in `mix.exs`:
+### application.ex
 
 ```elixir
-def deps do
-  [
-    {:pool, "~> 0.1.0"}
-  ]
+defmodule YourApp do
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    worker_args = [
+      host: 'localhost',
+      username: 'postgres',
+      password: 'postgres',
+      database: 'analysis',
+      timeout: 4000
+    ]
+
+    pool_conf = %{
+      name: SomePoolName,
+      size: 10,
+      max_overflow: 2,
+      strategy: :fifo
+      worker_opts: %{worker_module: SomeWorkerModule, worker_args: worker_args}
+    }
+
+    children = [
+      Pool.child_spec(pool_conf)
+    ]
+
+    opts = [strategy: :one_for_one, name: YourApp.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
 end
 ```
+## License
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/pool>.
-
+Same as poolboy
